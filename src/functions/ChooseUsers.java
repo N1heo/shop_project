@@ -1,11 +1,11 @@
-package domain;
+package functions;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-import static domain.AuthorizationDelivery.deliverymanInputLgPw;
-import static domain.AuthorizationDirector.directorInputLgPw;
-import static domain.AuthorizationWorker.workerInputLgPw;
+import static functions.AuthorizationDelivery.deliverymanInputLgPw;
+import static functions.AuthorizationDirector.directorInputLgPw;
+import static functions.AuthorizationWorker.workerInputLgPw;
 
 public class ChooseUsers {
     // Выбор Аккаунта

@@ -1,4 +1,4 @@
-package domain;
+package functions;
 
 import java.io.IOException;
 import java.nio.file.Files;

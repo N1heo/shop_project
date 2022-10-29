@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 
-import static domain.ChooseUsers.chooseUsers;
+import static functions.ChooseUsers.chooseUsers;
 
 public class App {
     public static void main(String args[]) throws IOException {

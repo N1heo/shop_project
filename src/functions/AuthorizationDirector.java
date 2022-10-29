@@ -1,4 +1,4 @@
-package domain;
+package functions;
 
 import java.util.Scanner;
 
