@@ -3,9 +3,9 @@ package functions;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static functions.AuthorizationDelivery.deliverymanInputLgPw;
-import static functions.AuthorizationDirector.directorInputLgPw;
-import static functions.AuthorizationWorker.workerInputLgPw;
+import static functions.RoleDelivery.deliverymanInputLgPw;
+import static functions.RoleDirector.directorInputLgPw;
+import static functions.RoleWorker.workerInputLgPw;
 
 public class ChooseUsers {
     // Выбор Аккаунта

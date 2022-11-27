@@ -3,7 +3,7 @@ package functions;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class AuthorizationWorker {
+public class RoleWorker {
     // Авторизация работника
     public static void workerInputLgPw() throws IOException {
         Scanner sc = new Scanner(System.in);

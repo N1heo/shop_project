@@ -1,11 +1,10 @@
 package functions;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-public class AuthorizationDelivery {
-    // Авторизация курьера
-    public static void deliverymanInputLgPw() throws IOException {
+public class RoleDirector {
+     // Авторизация директора
+     public static void directorInputLgPw() {
         Scanner sc = new Scanner(System.in);
 
         do {
@@ -16,15 +15,16 @@ public class AuthorizationDelivery {
             String input_pw = sc.next();
             sc.nextLine();
 
-            boolean haveInArray = FileReader.authorization(2, input_lg, input_pw);
-
+            boolean haveInArray = FileReader.authorization(0, input_lg, input_pw);
+            
             if (haveInArray) {
-                System.out.println("Приветствую дорогой доставщик!");
-                // deliverymanActions();
+                System.out.println("Директор, вы успешно вошли!");
+                // directorActions();
                 break;
             } else {
-                System.out.println("Попытайтесь снова.");
+                System.out.println("Попытайтесь снова");
             }
         } while (true);
     }
+
 }
