@@ -1,7 +1,11 @@
 package functions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
+
+import dnl.utils.text.table.TextTable;
 
 import static functions.DB.*;
 import java.sql.ResultSet;
@@ -22,7 +26,9 @@ public class RoleDelivery {
             boolean haveInArray = FileReader.authorization(2, input_lg, input_pw);
 
             if (haveInArray) {
-                System.out.println("Приветствую дорогой доставщик!");
+                System.out.println();
+                System.out.println("Вы вошли успешно!");
+                System.out.println();
                 menu();
                 break;
             } else {
@@ -47,11 +53,14 @@ public class RoleDelivery {
             String choose = sc.nextLine();
             switch (choose) {
                 case "1":
-                    System.out.println("");
+                    System.out.println("Список заказанных товаров: ");
+                    System.out.println();
                     show_delivery();
                     break;
                 case "2":
-                    System.out.println("");
+                    System.out.println("Список доставленных товаров: ");
+                    System.out.println();
+                    show_delievered();
                     break;
                 case "3":
                     System.out.println("");
@@ -94,11 +103,7 @@ public class RoleDelivery {
               String  name = rs.getString("name");
               int amount  = rs.getInt("amount");
               String  category = rs.getString("category");
-              System.out.println( "ID = " + id );
-              System.out.println( "NAME = " + name );
-              System.out.println( "AMOUNT = " + amount );
-              System.out.println( "CATEGORY = " + category );
-              System.out.println();
+              System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
            }
            rs.close();
            stmt.close();
@@ -106,6 +111,38 @@ public class RoleDelivery {
            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
            System.exit(0);
         }
-        System.out.println("Operation done successfully");
+        System.out.println("Операция выполнена успешно!");
+    }
+
+    public static void show_delievered() throws IOException{
+        try {
+           stmt = c.createStatement();
+           ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
+           String[] columnNames = {
+            "id",
+            "name",
+            "amount",
+            "category"};
+           Object[][] data = new Object[][]{};
+           ArrayList<Object> newdata = new ArrayList<Object>(Arrays.asList(data));
+           while ( rs.next() ) {
+              int id = rs.getInt("id");
+              String  name = rs.getString("name");
+              int amount  = rs.getInt("amount");
+              String  category = rs.getString("category");
+              Object[] obj = new Object[] {id, name, amount, category};
+              newdata.add(obj);
+              TextTable tt = new TextTable(columnNames, data);
+              tt.printTable();
+            //   System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
+            
+           }
+           rs.close();
+           stmt.close();
+        } catch ( Exception e ) {
+           System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+           System.exit(0);
+        }
+        System.out.println("Операция выполнена успешно!");
     }
 }

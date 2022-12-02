@@ -25,7 +25,7 @@ public class DB {
          System.err.println(e.getClass().getName()+": "+e.getMessage());
          System.exit(0);
       }
-      System.out.println("Opened database successfully");
+      System.out.println("Открывается база данных....");
    }
 
    public static void create_table() {
@@ -37,8 +37,8 @@ public class DB {
             " PRICE         DOUBLE PRECISION  NOT NULL, " +
             " AMOUNT        INT, " +
             " CATEGORY      TEXT              NOT NULL, " +
-            " SALE          BOOLEAN           NOT NULL, " +
-            " SALE_AMOUNT   DOUBLE PRECISION  NOT NULL, " +
+            " SALE          BOOLEAN           NOT NULL DEFAULT FALSE, " +
+            " SALE_AMOUNT   DOUBLE PRECISION  NOT NULL DEFAULT 0, " +
             " BUY_DATE      TIMESTAMP         DEFAULT NOW())";
          stmt.executeUpdate(sql);
 
@@ -76,7 +76,8 @@ public class DB {
          System.err.println( e.getClass().getName()+": "+ e.getMessage() );
          System.exit(0);
       }
-      System.out.println("Table created successfully");
+      System.out.println("Создаётся таблица...");
+      System.out.println();
    }
    
    

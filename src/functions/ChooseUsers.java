@@ -18,6 +18,7 @@ public class ChooseUsers {
         System.out.println("(3) Доставщик");
         do {
             System.out.print("Ваш выбор: ");
+            System.out.println();
             String choose = sc.nextLine();
             switch (choose) {
                 case "director":

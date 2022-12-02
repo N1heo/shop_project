@@ -8,8 +8,8 @@ public class App {
     public static void main(String args[]) throws IOException {
         open_db();
         create_table();
-
-        System.out.println("Пожалуйста, авторизуйтесь");
+        
+        System.out.println("Чтобы начать работу, пожалуйста, авторизуйтесь..");
         chooseUsers();
     }
 }
