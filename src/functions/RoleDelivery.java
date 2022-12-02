@@ -116,32 +116,31 @@ public class RoleDelivery {
 
     public static void show_delievered() throws IOException{
         try {
-           stmt = c.createStatement();
-           ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
-           String[] columnNames = {
-            "id",
-            "name",
-            "amount",
-            "category"};
-           Object[][] data = new Object[][]{};
-           ArrayList<Object> newdata = new ArrayList<Object>(Arrays.asList(data));
-           while ( rs.next() ) {
-              int id = rs.getInt("id");
-              String  name = rs.getString("name");
-              int amount  = rs.getInt("amount");
-              String  category = rs.getString("category");
-              Object[] obj = new Object[] {id, name, amount, category};
-              newdata.add(obj);
-              TextTable tt = new TextTable(columnNames, data);
-              tt.printTable();
-            //   System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
-            
-           }
-           rs.close();
-           stmt.close();
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
+            String[] columnNames = {
+                "id",
+                "name",
+                "amount",
+                "category"};
+            Object[][] data = new Object[][]{};
+            while ( rs.next() ) {
+                int c = 0;
+                int id = rs.getInt("id");
+                String  name = rs.getString("name");
+                int amount  = rs.getInt("amount");
+                String  category = rs.getString("category");
+                data[c] = new Object[]{id, name, amount, category};
+                c++;
+            }
+                TextTable tt = new TextTable(columnNames, data);
+                tt.printTable();
+                //   System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
+            rs.close();
+            stmt.close();
         } catch ( Exception e ) {
-           System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-           System.exit(0);
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
         }
         System.out.println("Операция выполнена успешно!");
     }
