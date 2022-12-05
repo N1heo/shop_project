@@ -20,6 +20,7 @@ public class DB {
          c = DriverManager
             .getConnection("jdbc:postgresql://localhost:5432/db_oop",
             "postgres", "iruves45");
+         c.setAutoCommit(false);
       } catch (Exception e) {
          e.printStackTrace();
          System.err.println(e.getClass().getName()+": "+e.getMessage());

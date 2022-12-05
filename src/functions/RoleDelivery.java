@@ -1,11 +1,7 @@
 package functions;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
-
-import dnl.utils.text.table.TextTable;
 
 import static functions.DB.*;
 import java.sql.ResultSet;
@@ -60,19 +56,23 @@ public class RoleDelivery {
                 case "2":
                     System.out.println("Список доставленных товаров: ");
                     System.out.println();
-                    show_delievered();
+                    show_delivered();
                     break;
                 case "3":
                     System.out.println("");
+                    deliver();
                     break;
                 case "4":
                     System.out.println("");
+                    num_delivered();
                     break;
                 case "5":
                     System.out.println("");
+                    num_ordered();
                     break;
                 case "6":
                     System.out.println("");
+                    fee();
                     break;
                 case "7":
                     System.out.println("Выход из системы");
@@ -94,54 +94,138 @@ public class RoleDelivery {
         return "";
     }
 
-    public static void show_delivery() {
+    public static void show_delivery() throws IOException{
         try {
-           stmt = c.createStatement();
-           ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED;" );
-           while ( rs.next() ) {
-              int id = rs.getInt("id");
-              String  name = rs.getString("name");
-              int amount  = rs.getInt("amount");
-              String  category = rs.getString("category");
-              System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
-           }
-           rs.close();
-           stmt.close();
-        } catch ( Exception e ) {
-           System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-           System.exit(0);
-        }
-        System.out.println("Операция выполнена успешно!");
-    }
 
-    public static void show_delievered() throws IOException{
-        try {
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
-            String[] columnNames = {
-                "id",
-                "name",
-                "amount",
-                "category"};
-            Object[][] data = new Object[][]{};
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED;" );
+
+            System.out.format("%4s %-20s %7s %-50s", "id", "name", "amount", "category");
+            System.out.println();
             while ( rs.next() ) {
-                int c = 0;
                 int id = rs.getInt("id");
                 String  name = rs.getString("name");
                 int amount  = rs.getInt("amount");
                 String  category = rs.getString("category");
-                data[c] = new Object[]{id, name, amount, category};
-                c++;
-            }
-                TextTable tt = new TextTable(columnNames, data);
-                tt.printTable();
-                //   System.out.println( "|id:" + id + "|название:" + name + "|кол-во:" + amount + "|категория:" + category + "|");
+                System.out.format("%4s %-20s %7s %-50s", id, name, amount, category);    
+                System.out.println();
+           }
             rs.close();
             stmt.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Операция выполнена успешно!");
+        System.out.println();
+        System.out.println("Таблица открыта успешно!");
     }
+
+    public static void show_delivered() throws IOException{
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
+
+            System.out.format("%4s %-30s %7s %-50s", "id", "name", "amount", "category");
+            System.out.println();
+            while ( rs.next() ) {
+                int id = rs.getInt("id");
+                String  name = rs.getString("name");
+                int amount  = rs.getInt("amount");
+                String  category = rs.getString("category");
+                System.out.format("%4s %-30s %7s %-50s", id, name, amount, category);    
+                System.out.println();
+            }
+            rs.close();
+            stmt.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println();
+        System.out.println("Таблица открыта успешно!");
+    }
+
+    public static void deliver() throws IOException{
+        try {
+            show_delivery();
+            System.out.println();
+
+            System.out.println("Введите id товара, который вы хотели бы доставить: ");
+            Scanner sc = new Scanner(System.in);
+            String delete_id = sc.nextLine();
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED WHERE ID = " + delete_id + ";");
+            rs.next();
+            int id = rs.getInt("id");
+            String  name = rs.getString("name");
+            double price = rs.getInt("price");
+            int amount  = rs.getInt("amount");
+            String  category = rs.getString("category");
+
+            String sql = "DELETE from ORDERED where ID = " + delete_id + ";";
+            stmt.executeUpdate(sql);
+
+            String sql2 = "INSERT INTO PRODUCT (NAME, PRICE, AMOUNT, CATEGORY)" 
+                          + "VALUES ('"+ name + "', " + price + ", " +  amount + ", '" + category + "' );";  
+            stmt.executeUpdate(sql2);
+            c.commit();
+
+            show_delivered();
+
+            stmt.close();
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Товар доставлен успешно!");
+        System.out.println();
+    }
+
+    public static void num_delivered() throws IOException{
+        try{
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;");
+            int c = 0;
+            while(rs.next()){
+                c++;
+            }
+            System.out.println("Кол-во доставленных товаров - " + c);    
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+    }
+
+    public static void num_ordered() throws IOException{
+        try{
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED;");
+            int c = 0;
+            while(rs.next()){
+                c++;
+            }
+            System.out.println("Кол-во заказанных товаров - " + c);    
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+    }
+
+    public static void fee() throws IOException{
+        try{
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT order_fee FROM ORDERED;");
+            double fee = 0;
+            while(rs.next()){
+                fee += rs.getDouble("order_fee");
+            }
+
+            System.out.println("Ваш заработок - " + fee);
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+    }
+
 }
