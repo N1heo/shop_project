@@ -1,0 +1,11 @@
+"filename", "language", "Java", "Markdown", "comment", "blank", "total"
+"c:\Users\User\Desktop\javaproj\oop\README.md", "Markdown", 0, 3, 0, 2, 5
+"c:\Users\User\Desktop\javaproj\oop\src\App.java", "Java", 12, 0, 0, 5, 17
+"c:\Users\User\Desktop\javaproj\oop\src\functions\ChooseUsers.java", "Java", 55, 0, 1, 5, 61
+"c:\Users\User\Desktop\javaproj\oop\src\functions\DB.class", "Java", 20, 0, 0, 0, 20
+"c:\Users\User\Desktop\javaproj\oop\src\functions\DB.java", "Java", 88, 0, 0, 16, 104
+"c:\Users\User\Desktop\javaproj\oop\src\functions\FileReader.java", "Java", 23, 0, 0, 3, 26
+"c:\Users\User\Desktop\javaproj\oop\src\functions\RoleDelivery.java", "Java", 206, 0, 1, 26, 233
+"c:\Users\User\Desktop\javaproj\oop\src\functions\RoleDirector.java", "Java", 22, 0, 2, 7, 31
+"c:\Users\User\Desktop\javaproj\oop\src\functions\RoleWorker.java", "Java", 347, 0, 2, 40, 389
+"Total", "-", 773, 3, 6, 104, 886

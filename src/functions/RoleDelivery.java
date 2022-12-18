@@ -36,6 +36,7 @@ public class RoleDelivery {
     public static String menu() throws IOException {
         Scanner sc = new Scanner(System.in);
 
+        System.out.println();
         System.out.println("Меню пользователя (Доставщик):");
         System.out.println("(1) Показать список заказанных товаров");
         System.out.println("(2) Показать доставленные товары");
@@ -52,32 +53,32 @@ public class RoleDelivery {
                     System.out.println("Список заказанных товаров: ");
                     System.out.println();
                     show_delivery();
-                    break;
+                    menu();
                 case "2":
                     System.out.println("Список доставленных товаров: ");
                     System.out.println();
                     show_delivered();
-                    break;
+                    menu();
                 case "3":
                     System.out.println("");
                     deliver();
-                    break;
+                    menu();
                 case "4":
                     System.out.println("");
                     num_delivered();
-                    break;
+                    menu();
                 case "5":
                     System.out.println("");
                     num_ordered();
-                    break;
+                    menu();
                 case "6":
                     System.out.println("");
                     fee();
-                    break;
+                    menu();
                 case "7":
-                    System.out.println("Выход из системы");
+                    System.out.println();
+                    System.out.println("Выход из системы...");
                     System.exit(0);
-                    break;
                 default:
                     System.out.println("Ошибка ввода");
                     System.out.print("Желаете выйти[1] или повторить[0]?");
@@ -157,7 +158,6 @@ public class RoleDelivery {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED WHERE ID = " + delete_id + ";");
             rs.next();
-            int id = rs.getInt("id");
             String  name = rs.getString("name");
             double price = rs.getInt("price");
             int amount  = rs.getInt("amount");
@@ -166,13 +166,14 @@ public class RoleDelivery {
             String sql = "DELETE from ORDERED where ID = " + delete_id + ";";
             stmt.executeUpdate(sql);
 
-            String sql2 = "INSERT INTO PRODUCT (NAME, PRICE, AMOUNT, CATEGORY)" 
+            sql = "INSERT INTO PRODUCT (NAME, PRICE, AMOUNT, CATEGORY)" 
                           + "VALUES ('"+ name + "', " + price + ", " +  amount + ", '" + category + "' );";  
-            stmt.executeUpdate(sql2);
+            stmt.executeUpdate(sql);
             c.commit();
 
             show_delivered();
-
+            
+            rs.close();
             stmt.close();
         } catch (Exception e) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );

@@ -43,7 +43,7 @@ public class DB {
             " BUY_DATE      TIMESTAMP         DEFAULT NOW())";
          stmt.executeUpdate(sql);
 
-         String sql2 = "CREATE TABLE IF NOT EXISTS ORDERED " +
+         sql = "CREATE TABLE IF NOT EXISTS ORDERED " +
             "(ID            SERIAL            PRIMARY KEY," +
             " NAME          TEXT              NOT NULL, " +
             " PRICE         DOUBLE PRECISION  NOT NULL, " +
@@ -51,9 +51,9 @@ public class DB {
             " CATEGORY      TEXT              NOT NULL, " +
             " ORDER_FEE     DOUBLE PRECISION, " +
             " ORDER_DATE    TIMESTAMP         DEFAULT NOW())";
-         stmt.executeUpdate(sql2);
+         stmt.executeUpdate(sql);
 
-         String sql3 = " CREATE OR REPLACE FUNCTION SET_DEFAULT_FEE() RETURNS TRIGGER AS $$ " +
+         sql = " CREATE OR REPLACE FUNCTION SET_DEFAULT_FEE() RETURNS TRIGGER AS $$ " +
                         " BEGIN " +
                         "   IF NEW.ORDER_FEE IS NULL THEN " + 
                         "      NEW.ORDER_FEE := NEW.PRICE * 0.1; " +
@@ -70,7 +70,26 @@ public class DB {
                         " ON ORDERED " +
                         " FOR EACH ROW " +
                         " EXECUTE PROCEDURE SET_DEFAULT_FEE();";
-         stmt.executeUpdate(sql3);
+         stmt.executeUpdate(sql);
+
+         sql = " CREATE OR REPLACE FUNCTION set_sale_bool() RETURNS TRIGGER AS $$ " +
+                        " BEGIN " +
+                        "   IF NEW.sale_amount > 0 THEN " + 
+                        "      NEW.sale := TRUE; " +
+                        "   END IF; " +
+                        "   RETURN NEW; "+
+                        "END; " +
+                        "$$ LANGUAGE PLPGSQL; " +
+
+                        "DROP TRIGGER IF EXISTS trig_set_sale_bool " +
+                        "ON PUBLIC.product;" +
+
+                        "CREATE TRIGGER trig_set_sale_bool " +
+                        " BEFORE INSERT OR UPDATE " +
+                        " ON PRODUCT " +
+                        " FOR EACH ROW " +
+                        " EXECUTE PROCEDURE set_sale_bool();";
+         stmt.executeUpdate(sql);
 
          stmt.close();
       } catch ( Exception e ) {
