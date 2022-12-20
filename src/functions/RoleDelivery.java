@@ -36,7 +36,6 @@ public class RoleDelivery {
     public static String menu() throws IOException {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println();
         System.out.println("Меню пользователя (Доставщик):");
         System.out.println("(1) Показать список заказанных товаров");
         System.out.println("(2) Показать доставленные товары");
@@ -48,32 +47,32 @@ public class RoleDelivery {
         do {
             System.out.print("Ваш выбор: ");
             String choose = sc.nextLine();
+            System.out.println();
             switch (choose) {
                 case "1":
                     System.out.println("Список заказанных товаров: ");
                     System.out.println();
-                    show_delivery();
+                    show_delivery(true);
                     menu();
                 case "2":
                     System.out.println("Список доставленных товаров: ");
                     System.out.println();
-                    show_delivered();
+                    show_delivered(true);
                     menu();
                 case "3":
-                    System.out.println("");
                     deliver();
                     menu();
                 case "4":
-                    System.out.println("");
                     num_delivered();
+                    System.out.println();
                     menu();
                 case "5":
-                    System.out.println("");
                     num_ordered();
+                    System.out.println();
                     menu();
                 case "6":
-                    System.out.println("");
                     fee();
+                    System.out.println();
                     menu();
                 case "7":
                     System.out.println();
@@ -95,7 +94,7 @@ public class RoleDelivery {
         return "";
     }
 
-    public static void show_delivery() throws IOException{
+    public static void show_delivery(boolean bool) throws IOException{
         try {
 
             stmt = c.createStatement();
@@ -118,10 +117,12 @@ public class RoleDelivery {
             System.exit(0);
         }
         System.out.println();
-        System.out.println("Таблица открыта успешно!");
+        if (bool){
+            System.out.println("Таблица открыта успешно!");
+        }
     }
 
-    public static void show_delivered() throws IOException{
+    public static void show_delivered(boolean bool) throws IOException{
         try {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
@@ -143,17 +144,29 @@ public class RoleDelivery {
             System.exit(0);
         }
         System.out.println();
-        System.out.println("Таблица открыта успешно!");
+        if (bool) {
+            System.out.println("Таблица открыта успешно!");
+        }
+        
     }
 
     public static void deliver() throws IOException{
         try {
-            show_delivery();
+            System.out.println("Список заказанных товаров: ");
+            System.out.println();
+            show_delivery(false);
             System.out.println();
 
-            System.out.println("Введите id товара, который вы хотели бы доставить: ");
             Scanner sc = new Scanner(System.in);
-            String delete_id = sc.nextLine();
+            int delete_id;
+            do {
+                System.out.println("Введите id товара, который вы хотели бы доставить: ");
+                while(!sc.hasNextInt()){
+                    System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                    sc.next();
+                }
+                delete_id = sc.nextInt();
+            } while (delete_id <= 0);
 
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM ORDERED WHERE ID = " + delete_id + ";");
@@ -171,7 +184,9 @@ public class RoleDelivery {
             stmt.executeUpdate(sql);
             c.commit();
 
-            show_delivered();
+            System.out.println("Список доставленных товаров: ");
+            System.out.println();
+            show_delivered(false);
             
             rs.close();
             stmt.close();
@@ -216,7 +231,7 @@ public class RoleDelivery {
     public static void fee() throws IOException{
         try{
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT order_fee FROM ORDERED;");
+            ResultSet rs = stmt.executeQuery( "SELECT order_fee FROM product;");
             double fee = 0;
             while(rs.next()){
                 fee += rs.getDouble("order_fee");

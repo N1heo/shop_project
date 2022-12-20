@@ -18,27 +18,27 @@ public class ChooseUsers {
         System.out.println("(3) Доставщик");
         do {
             System.out.print("Ваш выбор: ");
-            System.out.println();
             String choose = sc.nextLine();
+            System.out.println();
             switch (choose) {
                 case "director":
                 case "Director":
                 case "1":
-                    System.out.println("Добро пожаловать Директор");
+                    System.out.println("Добро пожаловать, Директор..");
                     System.out.println("Введите логин и пароль");
                     directorInputLgPw();
                     break;
                 case "worker":
                 case "Worker":
                 case "2":
-                    System.out.println("Добро пожаловать Работник");
+                    System.out.println("Добро пожаловать, Работник..");
                     System.out.println("Введите логин и пароль");
                     workerInputLgPw();
                     break;
                 case "deliveryman":
                 case "Deliveryman":
                 case "3":
-                    System.out.println("Добро пожаловать Доставщик");
+                    System.out.println("Добро пожаловать, Доставщик..");
                     System.out.println("Введите логин и пароль");
                     deliverymanInputLgPw();
                     break;

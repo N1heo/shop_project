@@ -46,7 +46,8 @@ public class RoleWorker {
         System.out.println("(6) Показать отсутсвующие на складе товары ");
         System.out.println("(7) Показать все товары, на которые действует скидка");
         System.out.println("(8) Удалить заказ");
-        System.out.println("(9) Выход");
+        System.out.println("(9) Поставить скидку");
+        System.out.println("(10) Выход");
         do {
             System.out.print("Ваш выбор: ");
             String choose = sc.nextLine();
@@ -55,40 +56,76 @@ public class RoleWorker {
                 case "1":
                     System.out.println("Cписок товаров доступных в магазине: ");
                     System.out.println();
-                    show_all_product();
+                    show_all_product(true);
                     menu();
                 case "2":
                     search_product();
-                    System.out.println();
                     menu();
                 case "3":
                     System.out.println("Отчёт: ");
+                    System.out.println();
                     report();
                     menu();
                 case "4":
-                    System.out.println("");
                     order();
                     menu();
                 case "5":
                     System.out.println("Список заказанных товаров: ");
-                    show_delivery();
+                    System.out.println();
+                    show_delivery(true);
                     menu();
                 case "6":
-                    System.out.println("");
+                    System.out.println("Отсутсвующие на складе товары: ");
+                    System.out.println();
                     show_missing();
                     menu();
                 case "7":
-                    System.out.println("");
+                    System.out.println("Все товары, на которые действует скидка: ");
+                    System.out.println();
                     show_sales();
                     menu();
                 case "8":
                     System.out.println("Список заказанных товаров: ");
-                    show_delivery();
-                    System.out.println("Введите ID товара для удаления: ");
-                    int delete_id = sc.nextInt();
+                    System.out.println();
+                    show_delivery(false);
+                    int delete_id;
+                    do {
+                        System.out.println("Введите ID товара для удаления: ");
+                        while (!sc.hasNextInt()) {
+                            System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                            sc.next();
+                        }
+                        delete_id = sc.nextInt();
+                    } while (delete_id <= 0);
                     delete_order(delete_id);
                     menu();
                 case "9":
+                    System.out.println("Cписок товаров доступных в магазине: ");
+                    System.out.println();
+                    show_all_product(false);
+                    int sale_id;
+                    do {
+                        System.out.println("Введите ID товара для скидки: ");
+                        while (!sc.hasNextInt()) {
+                            System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                            sc.next();
+                        }
+                        sale_id = sc.nextInt();
+                    } while (sale_id <= 0);
+
+                    double sale_amount;
+                    do {
+                        System.out.println("Введите скидку, в дробном виде(0.1, 0.5): ");
+                        while (!sc.hasNextDouble()) {
+                            System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                            sc.next();
+                        }
+                        sale_amount = sc.nextDouble();
+                    } while (sale_id <= 0);
+
+                    make_sale(sale_amount, sale_id);
+                    menu();
+                case "10":
                     System.out.println("Выход из системы");
                     System.exit(0);
                 default:
@@ -107,7 +144,7 @@ public class RoleWorker {
         return "";
     }
 
-    public static void show_all_product() throws IOException{
+    public static void show_all_product(boolean bool) throws IOException{
         try {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT;" );
@@ -129,7 +166,9 @@ public class RoleWorker {
             System.exit(0);
         }
         System.out.println();
-        System.out.println("Таблица открыта успешно!");
+        if (bool){
+            System.out.println("Таблица открыта успешно!");
+        }
     }
 
     public static String search_product() throws IOException{
@@ -143,14 +182,24 @@ public class RoleWorker {
             String choose = sc.nextLine();
             switch (choose) {
                 case "1":
-                    System.out.println("Напишите серийный номер для поиска:>>");
-                    String value = sc.nextLine();
-                    finder("ID", value);
+                    int value;
+                    do{
+                        System.out.println("Напишите серийный номер для поиска:>>");
+                        while(!sc.hasNextInt()){
+                            System.out.println("Ошибка ввода.. Повторите ещё раз:>>");
+                            sc.next();
+                        }
+                        value = sc.nextInt();
+                    } while (value <= 0);
+                    System.out.println();
+                    System.out.println("Рез-ты поиска:");
+                    finder("ID", Integer.toString(value));
                     break;
                 case "2":
                     System.out.println("Напишите имя товара для поиска:>>");
                     String value2 = sc.nextLine();
-                    System.out.println(value2);
+                    System.out.println();
+                    System.out.println("Рез-ты поиска:");
                     finder("NAME", value2);
                     break;
                 default:
@@ -175,25 +224,30 @@ public class RoleWorker {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM PRODUCT WHERE " + id_or_name + " = '" + value + "';" );
 
-            System.out.format("%4s %-30s %13s %7s %-50s", "id", "name", "price", "amount", "category");
-            System.out.println();
-            while ( rs.next() ) {
-                int id = rs.getInt("id");
-                String  name = rs.getString("name");
-                double price = rs.getDouble("price");
-                int amount  = rs.getInt("amount");
-                String category = rs.getString("category");
-                System.out.format("%4s %-30s %13s %7s %-50s", id, name, price, amount, category);
+            if (rs.next() == false){
+                System.out.println("Товар не найден!");
+            } else{
+                
+                System.out.format("%4s %-30s %13s %7s %-50s", "id", "name", "price", "amount", "category");
                 System.out.println();
+                do{
+                    int id = rs.getInt("id");
+                    String  name = rs.getString("name");
+                    double price = rs.getDouble("price");
+                    int amount  = rs.getInt("amount");
+                    String category = rs.getString("category");
+                    System.out.format("%4s %-30s %13s %7s %-50s", id, name, price, amount, category);
+                    System.out.println();
+                } while ( rs.next()); 
+                rs.close();
+                stmt.close();
+                System.out.println();
+                System.out.println("Товар найден успешно!");
             }
-            rs.close();
-            stmt.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println();
-        System.out.println("Таблица открыта успешно!");
     }
     
     public static void report() throws IOException{
@@ -239,7 +293,7 @@ public class RoleWorker {
                     order_new();
                     break;
                 case "2":
-                    show_all_product();
+                    show_all_product(false);
                     System.out.println();
                     System.out.println("Введите имя товара, требуемого для докупки: ");
                     String order_name = sc.nextLine();
@@ -271,10 +325,25 @@ public class RoleWorker {
             System.out.println("Для заказа нового товара, нужно также внести запись о нём: ");
             System.out.println("Введите имя товара: ");
             String name = sc.nextLine();
-            System.out.println("Введите цену товара: ");
-            double price = sc.nextDouble();
-            System.out.println("Введите количество товара: ");
-            int amount = sc.nextInt();
+            double price;
+            do{
+                System.out.println("Введите цену товара: ");
+                while (!sc.hasNextDouble()){
+                    System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                    sc.next();
+                }
+                price = sc.nextDouble();
+            } while (price <= 0);
+            
+            int amount;
+            do{
+                System.out.println("Сколько бы вы хотели заказать?: ");
+                while (!sc.hasNextInt()){
+                    System.out.println("Ошибка ввода.. Повторите ещё раз: ");
+                }
+                amount = sc.nextInt();
+            } while (amount <= 0);
+
             System.out.println("Введите категорию товара: ");
             sc.nextLine();
             String category = sc.nextLine();
@@ -367,7 +436,7 @@ public class RoleWorker {
                 String  name = rs.getString("name");
                 int amount  = rs.getInt("amount");
                 double sale_amount = rs.getDouble("sale_amount");
-                String sale_amount_percentage =Double.toString(sale_amount*100)+"%";
+                String sale_amount_percentage =Long.toString(Math.round(sale_amount*100))+"%";
                 String  category = rs.getString("category");
                 System.out.format("%4s %-30s %7s %11s %-50s", id, name, amount, sale_amount_percentage, category);    
                 System.out.println();
@@ -395,6 +464,22 @@ public class RoleWorker {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Товар удалён!");
+        System.out.println("Заказ удалён!");
+    }
+
+    public static void make_sale(double sale_amount, int sale_id) throws IOException{
+        try{
+            stmt = c.createStatement();
+            String sql = "UPDATE product SET sale_amount = "+ sale_amount +"where ID =" + sale_id + ";";
+            stmt.executeUpdate(sql);
+            c.commit();
+
+            stmt.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println();
+        System.out.println("Скидка поставлена успешно!");
     }
 }

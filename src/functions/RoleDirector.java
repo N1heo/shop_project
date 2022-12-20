@@ -24,6 +24,7 @@ public class RoleDirector {
             boolean haveInArray = FileReader.authorization(0, input_lg, input_pw);
             
             if (haveInArray) {
+                System.out.println();
                 System.out.println("Директор, вы успешно вошли!");
                 menu();
                 break;
@@ -37,7 +38,7 @@ public class RoleDirector {
         Scanner sc = new Scanner(System.in);
 
         System.out.println();
-        System.out.println("Меню пользователя (Доставщик):");
+        System.out.println("Меню пользователя (Директор):");
         System.out.println("(1) Показать список всех товаров");
         System.out.println("(2) Показать количество товаров");
         System.out.println("(3) Показать товар с максимальным количеством");
@@ -51,7 +52,8 @@ public class RoleDirector {
             switch (choose) {
                 case "1":
                     System.out.println("Cписок товаров доступных в магазине:");
-                    show_all_product();
+                    System.out.println();
+                    show_all_product(true);
                     menu();
                 case "2":
                     System.out.println("Таблица кол-ва товаров по категориям: ");
@@ -70,6 +72,7 @@ public class RoleDirector {
                     menu();
                 case "5":
                     System.out.println("Отчёт по закупкам товаров: ");
+                    System.out.println();
                     report();
                     menu();
                 case "6":
@@ -129,8 +132,6 @@ public class RoleDirector {
             System.out.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
-        System.out.println();
-        System.out.println("");
     }
 
 }

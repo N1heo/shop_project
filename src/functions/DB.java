@@ -40,6 +40,7 @@ public class DB {
             " CATEGORY      TEXT              NOT NULL, " +
             " SALE          BOOLEAN           NOT NULL DEFAULT FALSE, " +
             " SALE_AMOUNT   DOUBLE PRECISION  NOT NULL DEFAULT 0, " +
+            " ORDER_FEE     DOUBLE PRECISION, " +
             " BUY_DATE      TIMESTAMP         DEFAULT NOW())";
          stmt.executeUpdate(sql);
 
@@ -49,25 +50,24 @@ public class DB {
             " PRICE         DOUBLE PRECISION  NOT NULL, " +
             " AMOUNT        INT, " +
             " CATEGORY      TEXT              NOT NULL, " +
-            " ORDER_FEE     DOUBLE PRECISION, " +
             " ORDER_DATE    TIMESTAMP         DEFAULT NOW())";
          stmt.executeUpdate(sql);
 
          sql = " CREATE OR REPLACE FUNCTION SET_DEFAULT_FEE() RETURNS TRIGGER AS $$ " +
                         " BEGIN " +
                         "   IF NEW.ORDER_FEE IS NULL THEN " + 
-                        "      NEW.ORDER_FEE := NEW.PRICE * 0.1; " +
+                        "      NEW.ORDER_FEE := NEW.PRICE * NEW.AMOUNT * 0.1; " +
                         "   END IF; " +
                         "   RETURN NEW; "+
                         "END; " +
                         "$$ LANGUAGE PLPGSQL; " +
 
                         "DROP TRIGGER IF EXISTS TRIG_SET_DEFAULT_FEE " +
-                        "ON PUBLIC.ORDERED;" +
+                        "ON PUBLIC.PRODUCT;" +
 
                         "CREATE TRIGGER TRIG_SET_DEFAULT_FEE " +
                         " BEFORE INSERT " +
-                        " ON ORDERED " +
+                        " ON PRODUCT " +
                         " FOR EACH ROW " +
                         " EXECUTE PROCEDURE SET_DEFAULT_FEE();";
          stmt.executeUpdate(sql);
@@ -99,6 +99,4 @@ public class DB {
       System.out.println("Создаётся таблица...");
       System.out.println();
    }
-   
-   
 }
